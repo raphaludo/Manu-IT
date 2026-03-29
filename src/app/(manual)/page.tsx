@@ -70,6 +70,15 @@ export default function ManualHomePage() {
               Ou escolha um tema abaixo.
             </p>
           </div>
+          <p className="mt-5 text-sm text-muted-foreground">
+            <Link
+              href="/paginas"
+              className="font-medium text-primary underline-offset-4 hover:underline"
+            >
+              Páginas institucionais
+            </Link>{" "}
+            — avisos e textos criados no editor visual (construtor por blocos).
+          </p>
         </div>
       </div>
 

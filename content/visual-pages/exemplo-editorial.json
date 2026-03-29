@@ -1,0 +1,36 @@
+{
+  "slug": "exemplo-editorial",
+  "title": "Página de exemplo — editor visual",
+  "description": "Demonstração de blocos: texto rico, destaque, imagem e botões. Edite em /admin após configurar CONTENT_ADMIN_SECRET.",
+  "updatedAt": "2026-03-29T12:00:00.000Z",
+  "blocks": [
+    {
+      "id": "blk_intro",
+      "type": "richText",
+      "html": "<p>Este conteúdo foi montado com o <strong>construtor visual</strong>. Use o painel administrativo para alterar blocos, imagens e destaques sem escrever HTML manualmente.</p>"
+    },
+    {
+      "id": "blk_callout",
+      "type": "callout",
+      "variant": "info",
+      "title": "Dica",
+      "html": "<p>Arraste os blocos pelo ícone à esquerda no editor para reordenar, como em um page builder.</p>"
+    },
+    {
+      "id": "blk_buttons",
+      "type": "buttons",
+      "items": [
+        {
+          "label": "Abrir manual MDX",
+          "href": "/",
+          "variant": "primary"
+        },
+        {
+          "label": "Admin (login)",
+          "href": "/admin/login",
+          "variant": "outline"
+        }
+      ]
+    }
+  ]
+}
