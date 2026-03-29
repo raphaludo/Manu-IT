@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Decretos regulamentadores (em construção)",
+    "description": "Espaço reservado para decretos estaduais que regulamentem o ITCD no Pará. Atualize o manifesto ao incluir novos atos.",
+    "slug": [
+      "decretos",
+      "regulamentacao"
+    ],
+    "category": "decretos",
+    "excerpt": "Esta página serve como placeholder até a inclusão dos decretos oficiais. Mantenha a mesma estrutura de frontmatter e utilize o componente de observação para notas da equipe editorial. Publique apenas textos validados institucionalmente. O rodapé do site reforça que o conteúdo nor…"
+  },
+  {
+    "title": "Exemplo orientativo de cálculo do ITCD",
+    "description": "Ilustração didática com valores fictícios. Não substitui cálculo oficial nem orientação individualizada.",
+    "slug": [
+      "exemplos",
+      "calculo-exemplo"
+    ],
+    "category": "exemplos",
+    "excerpt": "> Aviso: valores meramente ilustrativos. Confirme alíquotas, isenções e atualizações monetárias com a legislação vigente. Premissas fictícias - Base de cálculo assumida: R$ 500.000,00 - Hipótese simplificada para fins didáticos. Passos 1. Identifique a base de cálculo aplicável a…"
+  },
+  {
+    "title": "FAQ — isenções e imunidades",
+    "description": "Perguntas frequentes sobre isenções e imunidades relacionadas ao ITCD. Responda com base na legislação validada pela área jurídica.",
+    "slug": [
+      "faq",
+      "isencoes"
+    ],
+    "category": "faq",
+    "excerpt": "O manual substitui a consulta jurídica formal? Não. Este conteúdo é orientativo e deve ser validado caso a caso pela assessoria competente. Onde encontrar a legislação primária? Utilize a seção [Leis](/manual/leis/lei-estadual-itcd) e referências federais aplicáveis, sempre citan…"
+  },
+  {
+    "title": "Instruções normativas — procedimentos gerais (modelo)",
+    "description": "Modelo para publicação de INs sobre ITCD. Ajuste títulos e remissões conforme a organização interna da Secretaria.",
+    "slug": [
+      "instrucoes-normativas",
+      "procedimentos-gerais"
+    ],
+    "category": "instrucoes-normativas",
+    "excerpt": "Use esta página como guia de formatação para instruções normativas: capítulos, fluxos e referências cruzadas com procedimentos e exemplos. Fluxo resumido 1. Identificação do contribuinte ou responsável. 2. Obrigações acessórias e prazos. 3. Canais de atendimento e recursos. Remis…"
+  },
+  {
+    "title": "Lei estadual — ITCD (modelo de estrutura)",
+    "description": "Referência de como publicar leis estaduais relacionadas ao ITCD no manual. Substitua pelo texto oficial após revisão jurídica.",
+    "slug": [
+      "leis",
+      "lei-estadual-itcd"
+    ],
+    "category": "leis",
+    "excerpt": "Este trecho é um modelo editorial para organização do manual. Inclua aqui a epígrafe, ementa e remissões oficiais após validação pela assessoria jurídica. Objeto e âmbito Descreva o objeto da norma estadual e o relacionamento com a legislação federal e municipal aplicável ao ITCD…"
+  },
+  {
+    "title": "Declaração e pagamento do ITCD",
+    "description": "Visão geral dos passos para declaração e quitação do ITCD no âmbito estadual. Detalhe conforme sistemas e portarias vigentes.",
+    "slug": [
+      "procedimentos",
+      "declaracao-pagamento"
+    ],
+    "category": "procedimentos",
+    "excerpt": "Documente aqui o passo a passo institucional, com links para sistemas oficiais e menção a prazos legais. Etapas sugeridas 1. Preparação Reúna documentação suporte e verifique enquadramento normativo. 2. Entrega da declaração Descreva canais digitais e presenciais adotados pela Se…"
+  }
+]
