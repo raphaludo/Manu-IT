@@ -14,6 +14,10 @@ import { manualHrefFromSlug } from "@/lib/manual/paths";
 
 type Props = { params: Promise<{ slug: string[] }> };
 
+function withoutLeadingH1(html: string): string {
+  return html.replace(/^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i, "");
+}
+
 export async function generateStaticParams() {
   const fromManifest = getAllManualSlugs();
   const fromDisk = await discoverSlugsFromDisk();
@@ -64,6 +68,7 @@ export default async function ManualDocPage({ params }: Props) {
       )
         .filter((item): item is { slug: string[]; doc: NonNullable<typeof doc> } => Boolean(item.doc))
     : [];
+  const contentHtml = withoutLeadingH1(doc.contentHtml);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 gap-8 px-4 py-8 sm:gap-10 sm:px-6 sm:py-10 lg:px-8 xl:gap-14">
@@ -95,7 +100,7 @@ export default async function ManualDocPage({ params }: Props) {
           </div>
           <div
             className="prose prose-slate mt-10 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm"
-            dangerouslySetInnerHTML={{ __html: doc.contentHtml }}
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
           {isManualCompleto ? (
             <div className="prose prose-slate mt-12 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm">
@@ -103,7 +108,11 @@ export default async function ManualDocPage({ params }: Props) {
                 <section key={entry.slug.join("/")} className="mt-10 first:mt-0">
                   <h2>{`${index + 1}. ${entry.doc.frontmatter.title}`}</h2>
                   <p>{entry.doc.frontmatter.description}</p>
-                  <div dangerouslySetInnerHTML={{ __html: entry.doc.contentHtml }} />
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: withoutLeadingH1(entry.doc.contentHtml),
+                    }}
+                  />
                 </section>
               ))}
             </div>
