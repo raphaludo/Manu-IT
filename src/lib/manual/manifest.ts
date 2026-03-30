@@ -134,6 +134,17 @@ export const manualNavigation: ManualNavNode[] = [
       },
     ],
   },
+  {
+    id: "manual-completo",
+    title: "Manual completo",
+    children: [
+      {
+        id: "manual-completo-base",
+        title: "Conteúdo integral consolidado em leitura única e download em PDF",
+        href: "/manual/estrutura-hibrida/manual-completo",
+      },
+    ],
+  },
 ];
 
 function walk(

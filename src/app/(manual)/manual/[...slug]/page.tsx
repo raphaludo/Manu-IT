@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Download } from "lucide-react";
 import { ManualBreadcrumbs } from "@/components/manual/manual-breadcrumbs";
 import { ManualToc } from "@/components/manual/manual-toc";
 import { siteConfig } from "@/config/site";
@@ -49,6 +50,7 @@ export default async function ManualDocPage({ params }: Props) {
   const { slug } = await params;
   const doc = await getDocBySlug(slug);
   if (!doc) notFound();
+  const isManualCompleto = slug.join("/") === "estrutura-hibrida/manual-completo";
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 gap-8 px-4 py-8 sm:gap-10 sm:px-6 sm:py-10 lg:px-8 xl:gap-14">
@@ -68,6 +70,15 @@ export default async function ManualDocPage({ params }: Props) {
             <p className="mt-4 text-pretty text-base leading-relaxed text-muted-foreground sm:text-[17px]">
               {doc.frontmatter.description}
             </p>
+            {isManualCompleto ? (
+              <a
+                href="/api/manual-completo/pdf"
+                className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+              >
+                <Download className="mr-2 h-4 w-4" aria-hidden />
+                Baixar manual completo em PDF
+              </a>
+            ) : null}
           </div>
           <div
             className="prose prose-slate mt-10 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm"

@@ -85,6 +85,10 @@ export const CATEGORY_VISUAL: Record<
     Icon: FileStack,
     blurb: "Modelos, tabelas, quadros-resumo e referências normativas.",
   },
+  "manual-completo": {
+    Icon: BookMarked,
+    blurb: "Versão consolidada com todo o conteúdo do manual e exportação em PDF.",
+  },
 };
 
 export function getCategoryVisual(id: string) {
