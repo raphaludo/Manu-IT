@@ -51,6 +51,19 @@ export default async function ManualDocPage({ params }: Props) {
   const doc = await getDocBySlug(slug);
   if (!doc) notFound();
   const isManualCompleto = slug.join("/") === "estrutura-hibrida/manual-completo";
+  const consolidatedDocs = isManualCompleto
+    ? (
+        await Promise.all(
+          getAllManualSlugs()
+            .filter((item) => item.join("/") !== "estrutura-hibrida/manual-completo")
+            .map(async (itemSlug) => ({
+              slug: itemSlug,
+              doc: await getDocBySlug(itemSlug),
+            })),
+        )
+      )
+        .filter((item): item is { slug: string[]; doc: NonNullable<typeof doc> } => Boolean(item.doc))
+    : [];
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 gap-8 px-4 py-8 sm:gap-10 sm:px-6 sm:py-10 lg:px-8 xl:gap-14">
@@ -84,6 +97,17 @@ export default async function ManualDocPage({ params }: Props) {
             className="prose prose-slate mt-10 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm"
             dangerouslySetInnerHTML={{ __html: doc.contentHtml }}
           />
+          {isManualCompleto ? (
+            <div className="prose prose-slate mt-12 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm">
+              {consolidatedDocs.map((entry, index) => (
+                <section key={entry.slug.join("/")} className="mt-10 first:mt-0">
+                  <h2>{`${index + 1}. ${entry.doc.frontmatter.title}`}</h2>
+                  <p>{entry.doc.frontmatter.description}</p>
+                  <div dangerouslySetInnerHTML={{ __html: entry.doc.contentHtml }} />
+                </section>
+              ))}
+            </div>
+          ) : null}
           <footer className="not-prose mt-12 border-t border-border/80 pt-8 text-sm text-muted-foreground">
             {doc.frontmatter.updated ? (
               <p>
