@@ -1,7 +1,11 @@
+import fs from "fs/promises";
+import path from "path";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import { getDocBySlug } from "@/lib/manual/get-doc";
 import { getAllManualSlugs } from "@/lib/manual/manifest";
+import { manualHrefFromSlug } from "@/lib/manual/paths";
 import { plainTextFromHtml } from "@/lib/manual/html-text";
+import { siteConfig } from "@/config/site";
 
 export const runtime = "nodejs";
 
@@ -19,6 +23,13 @@ type DrawStyle = {
   color: { r: number; g: number; b: number };
   gapAfter: number;
   indent?: number;
+};
+
+type TocEntry = {
+  title: string;
+  level: 1 | 2;
+  pageNumber: number;
+  link: string;
 };
 
 function decodeHtmlEntities(text: string): string {
@@ -45,6 +56,16 @@ function cleanInlineHtml(html: string): string {
 
 function withoutLeadingH1(html: string): string {
   return html.replace(/^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i, "");
+}
+
+function slugify(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
 }
 
 function blocksFromHtml(html: string, docTitle: string): DocBlock[] {
@@ -202,6 +223,163 @@ function drawPageFooter(page: PDFPage, text: string, font: PDFFont) {
   });
 }
 
+function drawCover(
+  page: PDFPage,
+  fontRegular: PDFFont,
+  fontBold: PDFFont,
+  logoImage?: { width: number; height: number; draw: (opts: { x: number; y: number; width: number; height: number }) => void },
+) {
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: PAGE.width,
+    height: PAGE.height,
+    color: rgb(0.97, 0.98, 1),
+  });
+  page.drawRectangle({
+    x: 0,
+    y: PAGE.height - 280,
+    width: PAGE.width,
+    height: 280,
+    color: rgb(0.043, 0.31, 0.541),
+  });
+  page.drawRectangle({
+    x: 0,
+    y: PAGE.height - 295,
+    width: PAGE.width,
+    height: 8,
+    color: rgb(0.102, 0.525, 0.91),
+  });
+
+  page.drawText("MANUAL ITCD/PA", {
+    x: PAGE.margin,
+    y: PAGE.height - 120,
+    size: 32,
+    font: fontBold,
+    color: rgb(1, 1, 1),
+  });
+  page.drawText("Versao consolidada", {
+    x: PAGE.margin,
+    y: PAGE.height - 156,
+    size: 15,
+    font: fontRegular,
+    color: rgb(0.89, 0.94, 1),
+  });
+  page.drawText("Secretaria de Estado da Fazenda do Para", {
+    x: PAGE.margin,
+    y: PAGE.height - 180,
+    size: 11,
+    font: fontRegular,
+    color: rgb(0.82, 0.9, 1),
+  });
+
+  if (logoImage) {
+    const maxW = 220;
+    const maxH = 90;
+    const ratio = Math.min(maxW / logoImage.width, maxH / logoImage.height);
+    const width = logoImage.width * ratio;
+    const height = logoImage.height * ratio;
+    logoImage.draw({
+      x: PAGE.width - PAGE.margin - width,
+      y: PAGE.height - 195,
+      width,
+      height,
+    });
+  }
+
+  page.drawText(`Gerado em ${new Date().toLocaleString("pt-BR")}`, {
+    x: PAGE.margin,
+    y: 86,
+    size: 10,
+    font: fontRegular,
+    color: rgb(0.32, 0.37, 0.43),
+  });
+  page.drawText("Documento oficial para consulta e referencia tecnica.", {
+    x: PAGE.margin,
+    y: 64,
+    size: 11,
+    font: fontRegular,
+    color: rgb(0.18, 0.21, 0.28),
+  });
+}
+
+function paginateToc(entries: TocEntry[]): TocEntry[][] {
+  const pages: TocEntry[][] = [];
+  let current: TocEntry[] = [];
+  let used = 0;
+  const max = PAGE.height - PAGE.margin * 2 - 40;
+  for (const item of entries) {
+    const lineHeight = item.level === 1 ? 20 : 16;
+    if (used + lineHeight > max && current.length) {
+      pages.push(current);
+      current = [];
+      used = 0;
+    }
+    current.push(item);
+    used += lineHeight;
+  }
+  if (current.length) pages.push(current);
+  return pages.length ? pages : [[]];
+}
+
+function drawTocPage(page: PDFPage, entries: TocEntry[], fontRegular: PDFFont, fontBold: PDFFont, pageIndex: number) {
+  let y = PAGE.height - PAGE.margin;
+  if (pageIndex === 0) {
+    page.drawText("Sumario", {
+      x: PAGE.margin,
+      y: y - 20,
+      size: 23,
+      font: fontBold,
+      color: rgb(0.043, 0.31, 0.541),
+    });
+    y -= 44;
+  } else {
+    page.drawText("Sumario (continua)", {
+      x: PAGE.margin,
+      y: y - 16,
+      size: 15,
+      font: fontBold,
+      color: rgb(0.043, 0.31, 0.541),
+    });
+    y -= 34;
+  }
+
+  for (const item of entries) {
+    const left = item.title;
+    const right = String(item.pageNumber);
+    const size = item.level === 1 ? 11 : 10;
+    const font = item.level === 1 ? fontBold : fontRegular;
+    const color = item.level === 1 ? rgb(0.1, 0.14, 0.2) : rgb(0.2, 0.24, 0.3);
+    const indent = item.level === 1 ? 0 : 18;
+    const rightWidth = fontRegular.widthOfTextAtSize(right, 10.5);
+    const rightX = PAGE.width - PAGE.margin - rightWidth;
+    const titleX = PAGE.margin + indent;
+    const titleWidth = font.widthOfTextAtSize(left, size);
+    const dotsArea = Math.max(24, rightX - titleX - titleWidth - 8);
+    const dotW = fontRegular.widthOfTextAtSize(".", 10);
+    const dots = ".".repeat(Math.max(6, Math.floor(dotsArea / dotW)));
+
+    page.drawText(`${left} ${dots}`, {
+      x: titleX,
+      y: y - size,
+      size,
+      font,
+      color,
+      maxWidth: PAGE.width - PAGE.margin * 2 - rightWidth - indent - 12,
+      link: item.link,
+    });
+    page.drawText(right, {
+      x: rightX,
+      y: y - 10.5,
+      size: 10.5,
+      font: fontRegular,
+      color: rgb(0.16, 0.2, 0.27),
+      link: item.link,
+    });
+    y -= item.level === 1 ? 20 : 16;
+  }
+}
+
 export async function GET() {
   const pdf = await PDFDocument.create();
   pdf.setTitle("Manual ITCD/PA - Manual Completo");
@@ -213,46 +391,30 @@ export async function GET() {
   const fontRegular = await pdf.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const coverPage = pdf.addPage([PAGE.width, PAGE.height]);
-  const tocPage = pdf.addPage([PAGE.width, PAGE.height]);
   let page = pdf.addPage([PAGE.width, PAGE.height]);
   let y = PAGE.height - PAGE.margin;
+
+  let logo:
+    | { width: number; height: number; draw: (opts: { x: number; y: number; width: number; height: number }) => void }
+    | undefined;
+  try {
+    const logoPath = path.join(process.cwd(), "public", "sefa-pa-logo.png");
+    const logoBytes = await fs.readFile(logoPath);
+    const logoImage = await pdf.embedPng(logoBytes);
+    logo = {
+      width: logoImage.width,
+      height: logoImage.height,
+      draw: ({ x, y: drawY, width, height }) =>
+        coverPage.drawImage(logoImage, { x, y: drawY, width, height }),
+    };
+  } catch {
+    logo = undefined;
+  }
+  drawCover(coverPage, fontRegular, fontBold, logo);
 
   const slugs = getAllManualSlugs().filter(
     (slug) => slug.join("/") !== "estrutura-hibrida/manual-completo",
   );
-
-  // Capa
-  coverPage.drawRectangle({
-    x: 0,
-    y: PAGE.height - 220,
-    width: PAGE.width,
-    height: 220,
-    color: rgb(0.043, 0.31, 0.541),
-  });
-  coverPage.drawText("MANUAL ITCD/PA", {
-    x: PAGE.margin,
-    y: PAGE.height - 95,
-    size: 28,
-    font: fontBold,
-    color: rgb(1, 1, 1),
-  });
-  coverPage.drawText("Versao consolidada", {
-    x: PAGE.margin,
-    y: PAGE.height - 130,
-    size: 14,
-    font: fontRegular,
-    color: rgb(0.9, 0.95, 1),
-  });
-  coverPage.drawText(`Gerado em ${new Date().toLocaleString("pt-BR")}`, {
-    x: PAGE.margin,
-    y: PAGE.height - 170,
-    size: 10,
-    font: fontRegular,
-    color: rgb(0.88, 0.92, 0.97),
-  });
-  drawPageFooter(coverPage, "Secretaria de Estado da Fazenda do Para", fontRegular);
-
-  type TocEntry = { title: string; pageNumber: number };
   const tocEntries: TocEntry[] = [];
 
   ({ page, y } = drawTextBlock(
@@ -277,9 +439,13 @@ export async function GET() {
     page = titleState.page;
     y = titleState.y;
 
+    const currentPageNum = pdf.getPages().indexOf(page) + 1;
+    const baseLink = `${siteConfig.url}${manualHrefFromSlug(slug)}`;
     tocEntries.push({
       title: manualDoc.frontmatter.title,
-      pageNumber: pdf.getPages().indexOf(page) + 1,
+      level: 1,
+      pageNumber: currentPageNum,
+      link: baseLink,
     });
 
     ({ page, y } = drawTextBlock(
@@ -312,6 +478,14 @@ export async function GET() {
 
     const blocks = blocksFromHtml(manualDoc.contentHtml, manualDoc.frontmatter.title);
     for (const block of blocks) {
+      if (block.type === "h2" || block.type === "h3") {
+        tocEntries.push({
+          title: block.text,
+          level: 2,
+          pageNumber: pdf.getPages().indexOf(page) + 1,
+          link: `${baseLink}#${slugify(block.text)}`,
+        });
+      }
       const style = styleForBlock(block.type, fontRegular, fontBold);
       const text = block.type === "li" ? `• ${block.text}` : block.text;
       ({ page, y } = drawTextBlock(pdf, page, y, text, style));
@@ -320,46 +494,22 @@ export async function GET() {
     y -= 6;
   }
 
-  // Sumario
-  let tocY = PAGE.height - PAGE.margin;
-  tocPage.drawText("Sumario", {
-    x: PAGE.margin,
-    y: tocY - 18,
-    size: 22,
-    font: fontBold,
-    color: rgb(0.043, 0.31, 0.541),
-  });
-  tocY -= 44;
+  const tocPagesData = paginateToc(tocEntries);
+  const tocOffset = tocPagesData.length;
+  const adjustedToc = tocEntries.map((entry) => ({
+    ...entry,
+    pageNumber: entry.pageNumber + tocOffset,
+  }));
+  const adjustedPagesData = paginateToc(adjustedToc);
 
-  for (const item of tocEntries) {
-    const left = item.title;
-    const right = String(item.pageNumber);
-    const rightWidth = fontRegular.widthOfTextAtSize(right, 11);
-    const rightX = PAGE.width - PAGE.margin - rightWidth;
-    const dotsWidth = Math.max(20, rightX - PAGE.margin - fontRegular.widthOfTextAtSize(left, 11) - 8);
-    const dotCount = Math.floor(dotsWidth / fontRegular.widthOfTextAtSize(".", 11));
-    const dots = ".".repeat(Math.max(8, dotCount));
-
-    tocPage.drawText(`${left} ${dots}`, {
-      x: PAGE.margin,
-      y: tocY - 11,
-      size: 11,
-      font: fontRegular,
-      color: rgb(0.122, 0.161, 0.216),
-      maxWidth: PAGE.width - PAGE.margin * 2 - rightWidth - 12,
-    });
-    tocPage.drawText(right, {
-      x: rightX,
-      y: tocY - 11,
-      size: 11,
-      font: fontRegular,
-      color: rgb(0.122, 0.161, 0.216),
-    });
-    tocY -= 20;
+  for (let i = 0; i < adjustedPagesData.length; i += 1) {
+    const tocPage = pdf.insertPage(1 + i, [PAGE.width, PAGE.height]);
+    drawTocPage(tocPage, adjustedPagesData[i] ?? [], fontRegular, fontBold, i);
   }
 
   const allPages = pdf.getPages();
-  for (let i = 1; i < allPages.length; i += 1) {
+  for (let i = 0; i < allPages.length; i += 1) {
+    if (i === 0) continue;
     drawPageFooter(allPages[i]!, `Pagina ${i + 1} de ${allPages.length}`, fontRegular);
   }
 
