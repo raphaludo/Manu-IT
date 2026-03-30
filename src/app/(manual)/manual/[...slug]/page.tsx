@@ -103,16 +103,30 @@ export default async function ManualDocPage({ params }: Props) {
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
           {isManualCompleto ? (
-            <div className="prose prose-slate mt-12 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm">
+            <div className="mt-12 space-y-12">
               {consolidatedDocs.map((entry, index) => (
-                <section key={entry.slug.join("/")} className="mt-10 first:mt-0">
-                  <h2>{`${index + 1}. ${entry.doc.frontmatter.title}`}</h2>
-                  <p>{entry.doc.frontmatter.description}</p>
+                <section
+                  key={entry.slug.join("/")}
+                  className="border-t border-border/70 pt-10 first:border-t-0 first:pt-0"
+                >
+                  <div className="not-prose">
+                    <p className="text-2xs font-semibold uppercase tracking-[0.14em] text-primary/85">
+                      Seção {index + 1}
+                    </p>
+                    <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl sm:leading-tight">
+                      {entry.doc.frontmatter.title}
+                    </h2>
+                    <p className="mt-4 text-pretty text-base leading-relaxed text-muted-foreground sm:text-[17px]">
+                      {entry.doc.frontmatter.description}
+                    </p>
+                  </div>
+                  <div className="prose prose-slate mt-8 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm">
                   <div
                     dangerouslySetInnerHTML={{
                       __html: withoutLeadingH1(entry.doc.contentHtml),
                     }}
                   />
+                  </div>
                 </section>
               ))}
             </div>
