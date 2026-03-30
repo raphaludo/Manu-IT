@@ -1,21 +1,17 @@
 import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
-import { compileMDX } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
-import type { ReactElement } from "react";
 import { docFrontmatterSchema, type DocFrontmatter } from "@/lib/manual/schemas";
-import { mdxComponents } from "@/lib/manual/mdx-components";
-import { mdxPathFromSlug } from "@/lib/manual/paths";
+import { htmlPathFromSlug } from "@/lib/manual/paths";
 
 export type CompiledDoc = {
   frontmatter: DocFrontmatter;
-  content: ReactElement;
+  contentHtml: string;
   rawSource: string;
 };
 
 export async function getDocBySlug(slug: string[]): Promise<CompiledDoc | null> {
-  const filePath = mdxPathFromSlug(slug);
+  const filePath = htmlPathFromSlug(slug);
   let raw: string;
   try {
     raw = await fs.readFile(filePath, "utf8");
@@ -32,31 +28,17 @@ export async function getDocBySlug(slug: string[]): Promise<CompiledDoc | null> 
     );
     return null;
   }
-
-  if (parsed.data.draft) {
-    return null;
-  }
-
-  const compiled = await compileMDX({
-    source: content,
-    components: mdxComponents,
-    options: {
-      parseFrontmatter: false,
-      mdxOptions: {
-        remarkPlugins: [remarkGfm],
-      },
-    },
-  });
+  if (parsed.data.draft) return null;
 
   return {
     frontmatter: parsed.data,
-    content: compiled.content as ReactElement,
+    contentHtml: content,
     rawSource: content,
   };
 }
 
 export async function getDocMetaForSlug(slug: string[]): Promise<DocFrontmatter | null> {
-  const filePath = mdxPathFromSlug(slug);
+  const filePath = htmlPathFromSlug(slug);
   let raw: string;
   try {
     raw = await fs.readFile(filePath, "utf8");
@@ -68,17 +50,7 @@ export async function getDocMetaForSlug(slug: string[]): Promise<DocFrontmatter 
   return parsed.success ? parsed.data : null;
 }
 
-export async function fileExistsForSlug(slug: string[]): Promise<boolean> {
-  const filePath = mdxPathFromSlug(slug);
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/** Slugs derivados de arquivos .mdx em content/manual (alternativa ao manifest) */
+/** Slugs derivados de arquivos .html em content/manual */
 export async function discoverSlugsFromDisk(): Promise<string[][]> {
   const root = path.join(process.cwd(), "content", "manual");
   const results: string[][] = [];
@@ -90,8 +62,8 @@ export async function discoverSlugsFromDisk(): Promise<string[][]> {
       const full = path.join(dir, e.name);
       if (e.isDirectory()) {
         await walk(full, [...parts, e.name]);
-      } else if (e.isFile() && e.name.endsWith(".mdx")) {
-        const base = e.name.replace(/\.mdx$/, "");
+      } else if (e.isFile() && e.name.endsWith(".html")) {
+        const base = e.name.replace(/\.html$/, "");
         results.push([...parts, base]);
       }
     }
@@ -102,6 +74,5 @@ export async function discoverSlugsFromDisk(): Promise<string[][]> {
   } catch {
     // pasta ausente
   }
-
   return results;
 }

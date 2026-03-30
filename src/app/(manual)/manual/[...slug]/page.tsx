@@ -69,9 +69,10 @@ export default async function ManualDocPage({ params }: Props) {
               {doc.frontmatter.description}
             </p>
           </div>
-          <div className="prose prose-slate mt-10 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm">
-            {doc.content}
-          </div>
+          <div
+            className="prose prose-slate mt-10 max-w-none font-serif dark:prose-invert prose-headings:scroll-mt-28 prose-headings:font-semibold prose-p:leading-relaxed prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm"
+            dangerouslySetInnerHTML={{ __html: doc.contentHtml }}
+          />
           <footer className="not-prose mt-12 border-t border-border/80 pt-8 text-sm text-muted-foreground">
             {doc.frontmatter.updated ? (
               <p>

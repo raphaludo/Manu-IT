@@ -3,68 +3,134 @@ import { slugFromManualPath } from "@/lib/manual/paths";
 
 export const manualNavigation: ManualNavNode[] = [
   {
-    id: "leis",
-    title: "Leis",
+    id: "apresentacao",
+    title: "Apresentação (Camada Institucional)",
     children: [
       {
-        id: "lei-itcd-pa",
-        title: "Lei estadual — ITCD (exemplo)",
-        href: "/manual/leis/lei-estadual-itcd",
+        id: "apresentacao-base",
+        title: "Finalidade, escopo e uso pelo auditor",
+        href: "/manual/estrutura-hibrida/apresentacao",
       },
     ],
   },
   {
-    id: "decretos",
-    title: "Decretos",
+    id: "parte-i",
+    title: "Parte I — Fundamentos Jurídicos e Normativos",
     children: [
       {
-        id: "decreto-placeholder",
-        title: "Decretos regulamentadores (em construção)",
-        href: "/manual/decretos/regulamentacao",
+        id: "parte-i-base",
+        title: "Competência, natureza e marco normativo",
+        href: "/manual/estrutura-hibrida/parte-i-fundamentos",
       },
     ],
   },
   {
-    id: "instrucoes-normativas",
-    title: "Instruções normativas",
+    id: "parte-ii",
+    title: "Parte II — Regra Matriz do ITCD",
     children: [
       {
-        id: "in-placeholder",
-        title: "IN — procedimentos (em construção)",
-        href: "/manual/instrucoes-normativas/procedimentos-gerais",
+        id: "parte-ii-base",
+        title: "Critérios material, temporal, espacial, pessoal e quantitativo",
+        href: "/manual/estrutura-hibrida/parte-ii-regra-matriz",
       },
     ],
   },
   {
-    id: "procedimentos",
-    title: "Procedimentos fiscais",
+    id: "parte-iii",
+    title: "Parte III — Não Incidência, Imunidades e Benefícios",
     children: [
       {
-        id: "proc-declaracao",
-        title: "Declaração e pagamento (exemplo)",
-        href: "/manual/procedimentos/declaracao-pagamento",
+        id: "parte-iii-base",
+        title: "Não incidência, imunidades e isenções",
+        href: "/manual/estrutura-hibrida/parte-iii-nao-incidencia",
       },
     ],
   },
   {
-    id: "exemplos",
-    title: "Exemplos práticos",
+    id: "parte-iv",
+    title: "Parte IV — Base de Cálculo e Avaliação de Bens",
     children: [
       {
-        id: "exemplo-calculo",
-        title: "Exemplo de cálculo orientativo",
-        href: "/manual/exemplos/calculo-exemplo",
+        id: "parte-iv-base",
+        title: "Avaliação, arbitramento e riscos fiscais",
+        href: "/manual/estrutura-hibrida/parte-iv-base-calculo",
       },
     ],
   },
   {
-    id: "faq",
-    title: "Perguntas frequentes",
+    id: "parte-v",
+    title: "Parte V — Fiscalização do ITCD",
     children: [
       {
-        id: "faq-isencoes",
-        title: "Isenções e imunidades",
-        href: "/manual/faq/isencoes",
+        id: "parte-v-base",
+        title: "Fluxo operacional, declarações e indícios",
+        href: "/manual/estrutura-hibrida/parte-v-fiscalizacao",
+      },
+    ],
+  },
+  {
+    id: "parte-vi",
+    title: "Parte VI — Constituição do Crédito Tributário",
+    children: [
+      {
+        id: "parte-vi-base",
+        title: "Apuração, encargos, penalidades e auto de infração",
+        href: "/manual/estrutura-hibrida/parte-vi-credito",
+      },
+    ],
+  },
+  {
+    id: "parte-vii",
+    title: "Parte VII — Casos Práticos e Situações Reais",
+    children: [
+      {
+        id: "parte-vii-base",
+        title: "Casos estruturados para aplicação prática",
+        href: "/manual/estrutura-hibrida/parte-vii-casos",
+      },
+    ],
+  },
+  {
+    id: "parte-viii",
+    title: "Parte VIII — Roteiros e Padrões Operacionais",
+    children: [
+      {
+        id: "parte-viii-base",
+        title: "Roteiros de fiscalização e modelos padronizados",
+        href: "/manual/estrutura-hibrida/parte-viii-roteiros",
+      },
+    ],
+  },
+  {
+    id: "parte-ix",
+    title: "Parte IX — Fluxos Operacionais (IA Ready)",
+    children: [
+      {
+        id: "parte-ix-base",
+        title: "Fluxos decisórios em lógica SE/ENTÃO/SENÃO",
+        href: "/manual/estrutura-hibrida/parte-ix-fluxos",
+      },
+    ],
+  },
+  {
+    id: "parte-x",
+    title: "Parte X — Suporte ao Auditor",
+    children: [
+      {
+        id: "parte-x-base",
+        title: "Glossário, FAQ fiscal e pontos controversos",
+        href: "/manual/estrutura-hibrida/parte-x-suporte",
+      },
+    ],
+  },
+  {
+    id: "anexos",
+    title: "Anexos",
+    children: [
+      {
+        id: "anexos-base",
+        title: "Modelos, tabelas, quadros-resumo e referências",
+        href: "/manual/estrutura-hibrida/anexos",
       },
     ],
   },

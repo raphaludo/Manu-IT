@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { docFrontmatterSchema } from "../src/lib/manual/schemas";
-import { plainTextFromMdx } from "../src/lib/manual/plain-text";
+import { plainTextFromHtml } from "../src/lib/manual/html-text";
 
 const ROOT = path.join(process.cwd(), "content", "manual");
 const OUT = path.join(process.cwd(), "public", "search-index.json");
@@ -14,14 +14,14 @@ async function walk(dir: string, parts: string[]): Promise<void> {
     const full = path.join(dir, e.name);
     if (e.isDirectory()) {
       await walk(full, [...parts, e.name]);
-    } else if (e.isFile() && e.name.endsWith(".mdx")) {
-      const base = e.name.replace(/\.mdx$/, "");
+    } else if (e.isFile() && e.name.endsWith(".html")) {
+      const base = e.name.replace(/\.html$/, "");
       const slug = [...parts, base];
       const raw = await fs.readFile(full, "utf8");
       const { data, content } = matter(raw);
       const parsed = docFrontmatterSchema.safeParse(data);
       if (!parsed.success || parsed.data.draft) continue;
-      const excerpt = plainTextFromMdx(content).slice(0, 280);
+      const excerpt = plainTextFromHtml(content).slice(0, 280);
       rows.push({
         title: parsed.data.title,
         description: parsed.data.description,

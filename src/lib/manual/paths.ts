@@ -2,8 +2,8 @@ import path from "path";
 
 export const CONTENT_MANUAL_ROOT = path.join(process.cwd(), "content", "manual");
 
-export function mdxPathFromSlug(slug: string[]): string {
-  return path.join(CONTENT_MANUAL_ROOT, ...slug) + ".mdx";
+export function htmlPathFromSlug(slug: string[]): string {
+  return path.join(CONTENT_MANUAL_ROOT, ...slug) + ".html";
 }
 
 /** `/manual/leis/arquivo` -> `['leis', 'arquivo']` */

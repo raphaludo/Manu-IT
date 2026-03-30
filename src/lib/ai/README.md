@@ -6,7 +6,7 @@ Responder perguntas sobre o manual com **citações** para trechos oficiais (slu
 
 ## Pipeline proposto
 
-1. **Ingestão**: em cada deploy ou job agendado, percorrer `.mdx`, aplicar chunking por seção (ex.: entre `h2`/`h3`) e gerar registros `ManualChunk` (ver `types.ts`).
+1. **Ingestão**: em cada deploy ou job agendado, percorrer `.html` em `content/manual/`, aplicar chunking por seção (ex.: entre `h2`/`h3`) e gerar registros `ManualChunk` (ver `types.ts`).
 2. **Embeddings**: calcular vetores com o provedor escolhido (API compatível com embeddings).
 3. **Armazenamento**: Supabase **pgvector** — tabela sugerida:
 

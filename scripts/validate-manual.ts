@@ -1,10 +1,9 @@
 import fs from "fs/promises";
-import path from "path";
 import {
   manualNavigation,
   getAllManualSlugs,
 } from "../src/lib/manual/manifest";
-import { mdxPathFromSlug } from "../src/lib/manual/paths";
+import { htmlPathFromSlug } from "../src/lib/manual/paths";
 import type { ManualNavNode } from "../src/types/manual";
 
 function collectHrefs(nodes: ManualNavNode[]): string[] {
@@ -35,7 +34,7 @@ async function main() {
       continue;
     }
     const slug = href.replace(/^\/manual\/?/, "").split("/").filter(Boolean);
-    const filePath = mdxPathFromSlug(slug);
+    const filePath = htmlPathFromSlug(slug);
     if (!(await pathExists(filePath))) {
       console.error(`Arquivo ausente para ${href}: esperado ${filePath}`);
       errors++;
@@ -44,7 +43,7 @@ async function main() {
 
   const slugs = getAllManualSlugs();
   for (const slug of slugs) {
-    const filePath = mdxPathFromSlug(slug);
+    const filePath = htmlPathFromSlug(slug);
     if (!(await pathExists(filePath))) {
       console.error(`Slug no manifest sem arquivo: ${slug.join("/")}`);
       errors++;
