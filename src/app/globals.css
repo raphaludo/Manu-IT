@@ -2,62 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Referência visual: documentações tipo Stripe / Vercel — neutros precisos, um acento, muito espaço em branco */
+/* Referência visual: portal SEFA/PA — base clara com azul institucional mais vivo */
 
 @layer base {
   :root {
-    --background: 220 20% 99%;
-    --foreground: 222 47% 11%;
+    --background: 210 40% 98%;
+    --foreground: 214 48% 16%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    /* Indigo próximo ao Stripe Docs */
-    --primary: 239 62% 52%;
+    /* Azul institucional inspirado na SEFA/PA */
+    --primary: 201 100% 44%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 40%;
-    --accent: 239 62% 52%;
+    --secondary: 203 63% 95%;
+    --secondary-foreground: 214 48% 16%;
+    --muted: 210 36% 95%;
+    --muted-foreground: 215 20% 38%;
+    --accent: 201 100% 44%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 239 62% 52%;
+    --border: 210 24% 88%;
+    --input: 210 24% 88%;
+    --ring: 201 100% 44%;
     --radius: 0.625rem;
-    --sidebar: 220 18% 97%;
-    --sidebar-foreground: 222 37% 18%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 239 62% 52%;
+    --sidebar: 206 65% 97%;
+    --sidebar-foreground: 214 42% 20%;
+    --sidebar-border: 210 24% 88%;
+    --sidebar-ring: 201 100% 44%;
     --doc-content-max: 42rem;
   }
 
   .dark {
-    --background: 222 47% 6%;
+    --background: 213 58% 8%;
     --foreground: 210 25% 96%;
     --card: 222 40% 9%;
     --card-foreground: 210 25% 96%;
     --popover: 222 40% 9%;
     --popover-foreground: 210 25% 96%;
-    --primary: 234 78% 68%;
-    --primary-foreground: 222 47% 6%;
-    --secondary: 217 33% 14%;
+    --primary: 199 95% 62%;
+    --primary-foreground: 213 58% 8%;
+    --secondary: 212 46% 16%;
     --secondary-foreground: 210 25% 96%;
-    --muted: 217 33% 14%;
-    --muted-foreground: 215 16% 62%;
-    --accent: 234 78% 68%;
-    --accent-foreground: 222 47% 6%;
+    --muted: 212 46% 16%;
+    --muted-foreground: 212 18% 70%;
+    --accent: 199 95% 62%;
+    --accent-foreground: 213 58% 8%;
     --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 28% 16%;
-    --input: 217 28% 16%;
-    --ring: 234 78% 68%;
-    --sidebar: 222 42% 8%;
+    --border: 212 34% 22%;
+    --input: 212 34% 22%;
+    --ring: 199 95% 62%;
+    --sidebar: 213 50% 10%;
     --sidebar-foreground: 210 22% 93%;
-    --sidebar-border: 217 28% 14%;
-    --sidebar-ring: 234 78% 68%;
+    --sidebar-border: 212 34% 22%;
+    --sidebar-ring: 199 95% 62%;
   }
 }
 

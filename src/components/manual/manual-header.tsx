@@ -17,7 +17,7 @@ import { siteConfig } from "@/config/site";
 
 export function ManualHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-50 border-b border-border/80 bg-gradient-to-r from-background via-background to-secondary/40 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex h-14 max-w-[100vw] items-center gap-3 px-4 sm:h-16 sm:gap-4 sm:px-6 lg:px-8">
         <Sheet>
           <SheetTrigger asChild>
