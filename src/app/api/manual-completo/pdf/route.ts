@@ -366,7 +366,6 @@ function drawTocPage(page: PDFPage, entries: TocEntry[], fontRegular: PDFFont, f
       font,
       color,
       maxWidth: PAGE.width - PAGE.margin * 2 - rightWidth - indent - 12,
-      link: item.link,
     });
     page.drawText(right, {
       x: rightX,
@@ -374,7 +373,6 @@ function drawTocPage(page: PDFPage, entries: TocEntry[], fontRegular: PDFFont, f
       size: 10.5,
       font: fontRegular,
       color: rgb(0.16, 0.2, 0.27),
-      link: item.link,
     });
     y -= item.level === 1 ? 20 : 16;
   }
